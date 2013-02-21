@@ -7,3 +7,6 @@ import (
 func Foo() commonjs.Provider {
 	return commonjs.NewPackageProvider("github.com/daaku/go.pkgrsrc/pkgrsrc/test/pkgrsrc_test_1")
 }
+
+func main() {
+}

@@ -50,13 +50,13 @@ func (b *Build) Go() error {
 	for _, pkg := range pkgs {
 		for _, file := range pkg.GoFiles {
 			abs := filepath.Join(pkg.SrcRoot, pkg.ImportPath, file)
-			if err := b.parseAndAddResources(abs); err != nil {
+			if err := b.parseAndAdd(abs); err != nil {
 				return err
 			}
 		}
 		for _, file := range pkg.CgoFiles {
 			abs := filepath.Join(pkg.SrcRoot, pkg.ImportPath, file)
-			if err := b.parseAndAddResources(abs); err != nil {
+			if err := b.parseAndAdd(abs); err != nil {
 				return err
 			}
 		}
@@ -71,23 +71,23 @@ func (b *Build) Go() error {
 	return nil
 }
 
-func (b *Build) parseAndAddResources(path string) error {
+func (b *Build) parseAndAdd(path string) error {
 	if b.Verbose {
 		fmt.Printf("Source: %s\n", path)
 	}
-	rus, err := b.parseResourceUsage(path)
+	rus, err := b.parse(path)
 	if err != nil {
 		return err
 	}
 	for _, ru := range rus {
-		if err := b.addResource(ru); err != nil {
+		if err := b.add(ru); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (b *Build) addResource(ru *ResourceUsage) error {
+func (b *Build) add(ru *ResourceUsage) error {
 	if b.processed[ru.ImportPath] {
 		return nil
 	}
@@ -140,7 +140,7 @@ func (b *Build) addResource(ru *ResourceUsage) error {
 	return nil
 }
 
-func (b *Build) parseResourceUsage(path string) ([]*ResourceUsage, error) {
+func (b *Build) parse(path string) ([]*ResourceUsage, error) {
 	r, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err

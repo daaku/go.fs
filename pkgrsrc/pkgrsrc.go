@@ -14,13 +14,17 @@ import (
 
 var reFunCall = regexp.MustCompile(`NewPackageProvider\(['"](.+?)['"]\)`)
 
+type ResourceUsage struct {
+	ImportPath string
+}
+
 // Parses source for resource usage and returns a list of import paths that are
 // referenced.
-func ParseResourceUsage(content []byte) ([]string, error) {
+func ParseResourceUsage(content []byte) ([]*ResourceUsage, error) {
 	calls := reFunCall.FindAllSubmatch(content, -1)
-	l := make([]string, len(calls))
+	l := make([]*ResourceUsage, len(calls))
 	for ix, dep := range calls {
-		l[ix] = string(dep[1])
+		l[ix] = &ResourceUsage{ImportPath: string(dep[1])}
 	}
 	return l, nil
 }
@@ -71,24 +75,24 @@ func (b *Build) parseAndAddResources(path string) error {
 	if b.Verbose {
 		fmt.Printf("Source: %s\n", path)
 	}
-	paths, err := b.parseResourceUsage(path)
+	rus, err := b.parseResourceUsage(path)
 	if err != nil {
 		return err
 	}
-	for _, p := range paths {
-		if err := b.addResource(p); err != nil {
+	for _, ru := range rus {
+		if err := b.addResource(ru); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (b *Build) addResource(root string) error {
-	if b.processed[root] {
+func (b *Build) addResource(ru *ResourceUsage) error {
+	if b.processed[ru.ImportPath] {
 		return nil
 	}
-	b.processed[root] = true
-	pkg, err := build.Import(root, b.SrcDir, build.AllowBinary)
+	b.processed[ru.ImportPath] = true
+	pkg, err := build.Import(ru.ImportPath, b.SrcDir, build.AllowBinary)
 	if err != nil {
 		return err
 	}
@@ -105,7 +109,7 @@ func (b *Build) addResource(root string) error {
 		return err
 	}
 	for _, info := range files {
-		zabs := filepath.Join(root, info.Name())
+		zabs := filepath.Join(ru.ImportPath, info.Name())
 		if info.Mode()&os.ModeType != 0 {
 			if b.Verbose {
 				fmt.Printf("Skipped Resource: %s\n", zabs)
@@ -136,7 +140,7 @@ func (b *Build) addResource(root string) error {
 	return nil
 }
 
-func (b *Build) parseResourceUsage(path string) ([]string, error) {
+func (b *Build) parseResourceUsage(path string) ([]*ResourceUsage, error) {
 	r, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err

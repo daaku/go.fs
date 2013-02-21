@@ -27,7 +27,7 @@ func NewMemZip() *MemZip {
 	return m
 }
 
-func TestSimple(t *testing.T) {
+func TestSimpleBuild(t *testing.T) {
 	memzip := NewMemZip()
 	build := &pkgrsrc.Build{
 		ImportPath: "github.com/daaku/go.pkgrsrc/pkgrsrc/_test/pkgrsrc_test_1",
@@ -45,5 +45,19 @@ func TestSimple(t *testing.T) {
 	}
 	if reader.File[0].Name != "github.com/daaku/go.pkgrsrc/pkgrsrc/_test/pkgrsrc_test_1/main.go" {
 		t.Fatalf("did not find expected file, found %s", reader.File[0].Name)
+	}
+}
+
+func TestParseResourceUsage(t *testing.T) {
+	content := []byte(`NewPackageProvider("foo")`)
+	rus, err := pkgrsrc.ParseResourceUsage(content)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(rus) != 1 {
+		t.Fatal("was expecting 1 resource usage")
+	}
+	if rus[0].ImportPath != "foo" {
+		t.Fatalf("was expecting foo resource usage but got %s", rus[0].ImportPath)
 	}
 }

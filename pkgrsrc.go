@@ -1,3 +1,7 @@
+// Command pkgrsrc is a build tool that looks for resources used by a package
+// (and dependencies) and helps build a zip file with its contents. This allows
+// for bundling the used resources into the compiled binary providing for ease
+// of distribution.
 package main
 
 import (

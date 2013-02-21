@@ -30,7 +30,7 @@ func NewMemZip() *MemZip {
 func TestSimpleBuild(t *testing.T) {
 	memzip := NewMemZip()
 	build := &pkgrsrc.Build{
-		ImportPath: "github.com/daaku/go.pkgrsrc/pkgrsrc/_test/pkgrsrc_test_1",
+		ImportPath: "github.com/daaku/go.pkgrsrc/pkgrsrc/test/pkgrsrc_test_1",
 		Writer:     memzip.Buffer,
 	}
 	if err := build.Go(); err != nil {
@@ -43,7 +43,7 @@ func TestSimpleBuild(t *testing.T) {
 	if len(reader.File) != 1 {
 		t.Fatal("expecting 1 entry in zip")
 	}
-	if reader.File[0].Name != "github.com/daaku/go.pkgrsrc/pkgrsrc/_test/pkgrsrc_test_1/main.go" {
+	if reader.File[0].Name != "github.com/daaku/go.pkgrsrc/pkgrsrc/test/pkgrsrc_test_1/main.go" {
 		t.Fatalf("did not find expected file, found %s", reader.File[0].Name)
 	}
 }

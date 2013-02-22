@@ -12,7 +12,7 @@ import (
 	"regexp"
 )
 
-var reFunCall = regexp.MustCompile(`NewPackageProvider\(['"](.+?)['"]\)`)
+var reFunCall = regexp.MustCompile(`NewPackageProvider\("(.+?)"\)`)
 
 type ResourceUsage struct {
 	ImportPath string

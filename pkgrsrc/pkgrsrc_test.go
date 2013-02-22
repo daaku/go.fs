@@ -49,7 +49,7 @@ func TestSimpleBuild(t *testing.T) {
 }
 
 func TestParseResourceUsage(t *testing.T) {
-	content := []byte(`NewPackageProvider("foo")`)
+	content := []byte(`NewPackageResourceProvider("foo")`)
 	rus, err := pkgrsrc.ParseResourceUsage(content)
 	if err != nil {
 		t.Fatal(err)

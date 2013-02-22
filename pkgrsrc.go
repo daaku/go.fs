@@ -49,6 +49,8 @@ func BinaryLength(rda io.ReaderAt) (int64, error) {
 	return max, nil
 }
 
+// Open an existing file and copy the binary part. The existing file will be
+// atomically replaced when this file is closed.
 func OpenFile(path string) (io.WriteCloser, error) {
 	fi, err := os.Stat(path)
 	if err != nil {

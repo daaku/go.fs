@@ -5,7 +5,7 @@ import (
 )
 
 func Foo() commonjs.Provider {
-	return commonjs.NewPackageResourceProvider("github.com/daaku/go.pkgrsrc/pkgrsrc/test/pkgrsrc_test_1")
+	return commonjs.NewPackageResourceProvider("github.com/daaku/go.pkgrsrc/pkgbuild/test/pkgbuild_test_1")
 }
 
 func main() {

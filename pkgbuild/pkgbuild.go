@@ -1,4 +1,4 @@
-package pkgrsrc
+package pkgbuild
 
 import (
 	"archive/zip"

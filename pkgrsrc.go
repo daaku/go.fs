@@ -8,7 +8,7 @@ import (
 	"debug/elf"
 	"fmt"
 	"github.com/daaku/go.atomicfile"
-	"github.com/daaku/go.pkgrsrc/pkgrsrc"
+	"github.com/daaku/go.pkgrsrc/pkgbuild"
 	"github.com/voxelbrain/goptions"
 	"go/build"
 	"io"
@@ -100,7 +100,7 @@ func Main() (err error) {
 	}
 	defer out.Close()
 
-	build := &pkgrsrc.Build{
+	build := &pkgbuild.Build{
 		ImportPath: options.ImportPath,
 		SrcDir:     options.SrcDir,
 		Verbose:    options.Verbose,

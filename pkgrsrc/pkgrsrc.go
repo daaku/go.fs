@@ -45,7 +45,6 @@ type dir struct {
 }
 
 func (d *dir) Open(path string) (io.ReadCloser, error) {
-	println("open in dir")
 	root, err := d.root()
 	if err != nil {
 		return nil, err
@@ -96,7 +95,6 @@ type zip struct {
 }
 
 func (z *zip) Open(path string) (io.ReadCloser, error) {
-	println("open in zip")
 	return zipBundle.Open(filepath.Join(z.root, path))
 }
 

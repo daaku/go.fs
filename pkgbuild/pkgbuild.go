@@ -12,7 +12,7 @@ import (
 	"regexp"
 )
 
-var reFunCall = regexp.MustCompile(`NewPackageResourceProvider\("(.+?)"\)`)
+var reFunCall = regexp.MustCompile(`pkgrsrc.New\("(.+?)"\)`)
 
 type ResourceUsage struct {
 	ImportPath string

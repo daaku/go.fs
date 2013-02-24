@@ -18,15 +18,18 @@ var zipBundle *resources.ZipBundle
 // only provide the top level files. The APIs behave much like their
 // counterparts in the os package.
 type PackageResources interface {
+	// Open a named file for reading.
 	Open(path string) (io.ReadCloser, error)
-	Stat(name string) (fi os.FileInfo, err error)
-	Readdir() ([]os.FileInfo, error)
-}
 
-// IsNotExist returns whether the error is known to report that a file does not
-// exist.
-func IsNotExist(err error) bool {
-	return err == resources.ErrNotFound || os.IsNotExist(err)
+	// Stat returns a FileInfo describing the named file.
+	Stat(name string) (fi os.FileInfo, err error)
+
+	// Get the list of sorted FileInfos for all the files in the package.
+	ReadDir() ([]os.FileInfo, error)
+
+	// IsNotExist returns whether the error is known to report that a file does not
+	// exist.
+	IsNotExist(err error) bool
 }
 
 // Provides scoped access to a package as raw resources. If the currently
@@ -60,7 +63,7 @@ func (d *dir) Stat(path string) (os.FileInfo, error) {
 	return os.Stat(filepath.Join(root, path))
 }
 
-func (d *dir) Readdir() ([]os.FileInfo, error) {
+func (d *dir) ReadDir() ([]os.FileInfo, error) {
 	root, err := d.root()
 	if err != nil {
 		return nil, err
@@ -77,6 +80,10 @@ func (d *dir) Readdir() ([]os.FileInfo, error) {
 		finew = append(finew, fi)
 	}
 	return finew, nil
+}
+
+func (d *dir) IsNotExist(err error) bool {
+	return os.IsNotExist(err)
 }
 
 func (d *dir) root() (string, error) {
@@ -106,7 +113,7 @@ func (z *zip) Stat(path string) (os.FileInfo, error) {
 	return r.Stat()
 }
 
-func (z *zip) Readdir() ([]os.FileInfo, error) {
+func (z *zip) ReadDir() ([]os.FileInfo, error) {
 	rs, err := zipBundle.Glob(filepath.Join(z.root, "*"))
 	if err != nil {
 		return nil, err
@@ -120,6 +127,10 @@ func (z *zip) Readdir() ([]os.FileInfo, error) {
 		fis = append(fis, fi)
 	}
 	return fis, err
+}
+
+func (z *zip) IsNotExist(err error) bool {
+	return err == resources.ErrNotFound
 }
 
 func init() {

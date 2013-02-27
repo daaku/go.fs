@@ -28,6 +28,7 @@ func NewMemZip() *MemZip {
 }
 
 func TestSimpleBuild(t *testing.T) {
+	t.Parallel()
 	memzip := NewMemZip()
 	build := &pkgbuild.Build{
 		ImportPath: "github.com/daaku/go.pkgrsrc/pkgbuild/test/pkgbuild_test_1",
@@ -49,6 +50,7 @@ func TestSimpleBuild(t *testing.T) {
 }
 
 func TestParseResourceUsage(t *testing.T) {
+	t.Parallel()
 	content := []byte(`pkgrsrc.New("foo")`)
 	rus, err := pkgbuild.ParseResourceUsage(content)
 	if err != nil {

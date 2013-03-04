@@ -51,7 +51,10 @@ func TestSimpleBuild(t *testing.T) {
 
 func TestParseResourceUsage(t *testing.T) {
 	t.Parallel()
-	content := []byte(`pkgrsrc.New("foo")`)
+	content := []byte(`
+  package foo
+  import "github.com/go.pkgrsrc/pkgrsrc"
+  var foo = pkgrsrc.Config{"foo"}`)
 	rus, err := pkgbuild.ParseResourceUsage(content)
 	if err != nil {
 		t.Fatal(err)

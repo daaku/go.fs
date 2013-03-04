@@ -7,7 +7,10 @@ import (
 
 func Foo() commonjs.Provider {
 	return commonjs.NewFileSystemProvider(
-		pkgrsrc.New("github.com/daaku/go.pkgrsrc/pkgbuild/test/pkgbuild_test_1"))
+		pkgrsrc.New(pkgrsrc.Config{
+			ImportPath: "github.com/daaku/go.pkgrsrc/pkgbuild/test/pkgbuild_test_1",
+			Recursive:  true,
+		}))
 }
 
 func main() {

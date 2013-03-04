@@ -4,30 +4,13 @@ import (
 	"archive/zip"
 	"fmt"
 	"github.com/daaku/go.deepimports"
+	"github.com/daaku/go.literalfinder"
+	"github.com/daaku/go.pkgrsrc/pkgrsrc"
 	"go/build"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
-	"regexp"
 )
-
-var reFunCall = regexp.MustCompile(`pkgrsrc.New\("(.+?)"\)`)
-
-type ResourceUsage struct {
-	ImportPath string
-}
-
-// Parses source for resource usage and returns a list of import paths that are
-// referenced.
-func ParseResourceUsage(content []byte) ([]*ResourceUsage, error) {
-	calls := reFunCall.FindAllSubmatch(content, -1)
-	l := make([]*ResourceUsage, len(calls))
-	for ix, dep := range calls {
-		l[ix] = &ResourceUsage{ImportPath: string(dep[1])}
-	}
-	return l, nil
-}
 
 // Builds a zip file for a specific package by import path.
 type Build struct {
@@ -41,6 +24,7 @@ type Build struct {
 
 // Build and write the zip file.
 func (b *Build) Go() error {
+	const ref = "github.com/daaku/go.pkgrsrc/pkgrsrc.Config"
 	b.processed = make(map[string]bool)
 	b.zipWriter = zip.NewWriter(b.Writer)
 	pkgs, err := deepimports.Find([]string{b.ImportPath}, b.SrcDir)
@@ -48,17 +32,26 @@ func (b *Build) Go() error {
 		return err
 	}
 	for _, pkg := range pkgs {
+		if len(pkg.CgoFiles) > 0 {
+			if b.Verbose {
+				fmt.Printf("skipping %s with cgo files\n", pkg.ImportPath)
+			}
+			continue
+		}
+		finder := literalfinder.NewFinder(ref)
 		for _, file := range pkg.GoFiles {
 			abs := filepath.Join(pkg.SrcRoot, pkg.ImportPath, file)
-			if err := b.parseAndAdd(abs); err != nil {
+			if err := b.addSource(finder, abs); err != nil {
 				return err
 			}
 		}
-		for _, file := range pkg.CgoFiles {
-			abs := filepath.Join(pkg.SrcRoot, pkg.ImportPath, file)
-			if err := b.parseAndAdd(abs); err != nil {
-				return err
-			}
+
+		var configs []*pkgrsrc.Config
+		if err := finder.Find(&configs); err != nil {
+			return err
+		}
+		for _, config := range configs {
+			b.addResource(config)
 		}
 	}
 
@@ -71,23 +64,14 @@ func (b *Build) Go() error {
 	return nil
 }
 
-func (b *Build) parseAndAdd(path string) error {
+func (b *Build) addSource(finder *literalfinder.Finder, filename string) error {
 	if b.Verbose {
-		fmt.Printf("Source: %s\n", path)
+		fmt.Printf("Source: %s\n", filename)
 	}
-	rus, err := b.parse(path)
-	if err != nil {
-		return err
-	}
-	for _, ru := range rus {
-		if err := b.add(ru); err != nil {
-			return err
-		}
-	}
-	return nil
+	return finder.Add(filename, nil)
 }
 
-func (b *Build) add(ru *ResourceUsage) error {
+func (b *Build) addResource(ru *pkgrsrc.Config) error {
 	if b.processed[ru.ImportPath] {
 		return nil
 	}
@@ -138,12 +122,4 @@ func (b *Build) add(ru *ResourceUsage) error {
 		}
 	}
 	return nil
-}
-
-func (b *Build) parse(path string) ([]*ResourceUsage, error) {
-	r, err := ioutil.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-	return ParseResourceUsage(r)
 }

@@ -32,14 +32,20 @@ type PackageResources interface {
 	IsNotExist(err error) bool
 }
 
+// Config for package resources.
+type Config struct {
+	ImportPath string
+	Recursive  bool
+}
+
 // Provides scoped access to a package as raw resources. If the currently
 // running binary has a zip attached, it will be used, otherwise the GOROOT
 // will be used to find the actual files.
-func New(path string) PackageResources {
+func New(r Config) PackageResources {
 	if zipBundle == nil {
-		return &dir{path, ""}
+		return &dir{r.ImportPath, ""}
 	}
-	return &zip{path}
+	return &zip{r.ImportPath}
 }
 
 type dir struct {

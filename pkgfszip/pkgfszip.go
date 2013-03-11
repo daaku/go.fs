@@ -1,4 +1,4 @@
-// Command pkgrsrc is a build tool that looks for resources used by a package
+// Command pkgfszip is a build tool that looks for resources used by a package
 // (and dependencies) and helps build a zip file with its contents. This allows
 // for bundling the used resources into the compiled binary providing for ease
 // of distribution.
@@ -8,7 +8,7 @@ import (
 	"debug/elf"
 	"fmt"
 	"github.com/daaku/go.atomicfile"
-	"github.com/daaku/go.pkgrsrc/pkgbuild"
+	"github.com/daaku/go.pkgfs/pkgbuild"
 	"github.com/voxelbrain/goptions"
 	"go/build"
 	"io"

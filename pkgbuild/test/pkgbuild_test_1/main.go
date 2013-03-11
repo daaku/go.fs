@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/daaku/go.pkgrsrc/pkgrsrc"
+	"github.com/daaku/go.pkgfs"
 )
 
-var FS = pkgrsrc.New(pkgrsrc.Config{
-	ImportPath: "github.com/daaku/go.pkgrsrc/pkgbuild/test/pkgbuild_test_1",
+var FS = pkgfs.New(pkgfs.Config{
+	ImportPath: "github.com/daaku/go.pkgfs/pkgbuild/test/pkgbuild_test_1",
 	Recursive:  true,
 })
 

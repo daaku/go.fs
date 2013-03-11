@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/daaku/go.deepimports"
 	"github.com/daaku/go.literalfinder"
-	"github.com/daaku/go.pkgrsrc/pkgrsrc"
+	"github.com/daaku/go.pkgfs"
 	"go/build"
 	"io"
 	"os"
@@ -24,7 +24,7 @@ type Build struct {
 
 // Build and write the zip file.
 func (b *Build) Go() error {
-	const ref = "github.com/daaku/go.pkgrsrc/pkgrsrc.Config"
+	const ref = "github.com/daaku/go.pkgfs/pkgfs.Config"
 	b.processed = make(map[string]bool)
 	b.zipWriter = zip.NewWriter(b.Writer)
 	pkgs, err := deepimports.Find([]string{b.ImportPath}, b.SrcDir)
@@ -46,7 +46,7 @@ func (b *Build) Go() error {
 			}
 		}
 
-		var configs []*pkgrsrc.Config
+		var configs []*pkgfs.Config
 		if err := finder.Find(&configs); err != nil {
 			return err
 		}
@@ -71,7 +71,7 @@ func (b *Build) addSource(finder *literalfinder.Finder, filename string) error {
 	return finder.Add(filename, nil)
 }
 
-func (b *Build) addResource(ru *pkgrsrc.Config) error {
+func (b *Build) addResource(ru *pkgfs.Config) error {
 	if b.processed[ru.ImportPath] {
 		return nil
 	}

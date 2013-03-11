@@ -3,7 +3,7 @@ package pkgbuild_test
 import (
 	"archive/zip"
 	"bytes"
-	"github.com/daaku/go.pkgrsrc/pkgbuild"
+	"github.com/daaku/go.pkgfs/pkgbuild"
 	"testing"
 )
 
@@ -31,7 +31,7 @@ func TestSimpleBuild(t *testing.T) {
 	t.Parallel()
 	memzip := NewMemZip()
 	build := &pkgbuild.Build{
-		ImportPath: "github.com/daaku/go.pkgrsrc/pkgbuild/test/pkgbuild_test_1",
+		ImportPath: "github.com/daaku/go.pkgfs/pkgbuild/test/pkgbuild_test_1",
 		Writer:     memzip.Buffer,
 	}
 	if err := build.Go(); err != nil {
@@ -44,7 +44,7 @@ func TestSimpleBuild(t *testing.T) {
 	if len(reader.File) != 1 {
 		t.Fatal("expecting 1 entry in zip")
 	}
-	if reader.File[0].Name != "github.com/daaku/go.pkgrsrc/pkgbuild/test/pkgbuild_test_1/main.go" {
+	if reader.File[0].Name != "github.com/daaku/go.pkgfs/pkgbuild/test/pkgbuild_test_1/main.go" {
 		t.Fatalf("did not find expected file, found %s", reader.File[0].Name)
 	}
 }
@@ -53,8 +53,8 @@ func TestParseResourceUsage(t *testing.T) {
 	t.Parallel()
 	content := []byte(`
   package foo
-  import "github.com/go.pkgrsrc/pkgrsrc"
-  var foo = pkgrsrc.Config{"foo"}`)
+  import "github.com/go.pkgfs"
+  var foo = pkgfs.Config{"foo"}`)
 	rus, err := pkgbuild.ParseResourceUsage(content)
 	if err != nil {
 		t.Fatal(err)

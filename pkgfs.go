@@ -1,10 +1,10 @@
-// Package pkgrsrc provides a read-only FileSystem based around go import
+// Package pkgfs provides a read-only FileSystem based around go import
 // paths.
 //
 // Essentially it provides a way to select files from a given path, defined in
 // terms of a go import path. In your development environment, this will work
 // with the real file system and provide access to the files in your GOPATH.
-// For production deployment, the included pkgrsrc tool will augment a binary
+// For production deployment, the included pkgfszip tool will augment a binary
 // with a zip file of all the resources it uses, along with its dependencies.
 //
 // One intended goal with this approach is that the package is still "go get"
@@ -14,7 +14,7 @@
 // Another goal is to make the transition from the os package to use this as
 // seamless as possible, so where possible the APIs are designed to mimic
 // their os counterparts.
-package pkgrsrc
+package pkgfs
 
 import (
 	"archive/zip"

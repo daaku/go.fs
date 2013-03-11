@@ -210,6 +210,7 @@ func init() {
 		rc, err := zip.OpenReader(p)
 		if err != nil {
 			fmt.Println(err)
+			return
 		}
 		bundle = &rc.Reader
 	}

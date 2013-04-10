@@ -6,10 +6,10 @@ import (
 	"github.com/daaku/go.deepimports"
 	"github.com/daaku/go.literalfinder"
 	"github.com/daaku/go.pkgfs"
-	"go/build"
 	"io"
 	"os"
 	"path/filepath"
+	"spew"
 )
 
 // Builds a zip file for a specific package by import path.
@@ -24,7 +24,7 @@ type Build struct {
 
 // Build and write the zip file.
 func (b *Build) Go() error {
-	const ref = "github.com/daaku/go.pkgfs/pkgfs.Config"
+	const ref = "github.com/daaku/go.pkgfs.Config"
 	b.processed = make(map[string]bool)
 	b.zipWriter = zip.NewWriter(b.Writer)
 	pkgs, err := deepimports.Find([]string{b.ImportPath}, b.SrcDir)
@@ -49,6 +49,9 @@ func (b *Build) Go() error {
 		var configs []*pkgfs.Config
 		if err := finder.Find(&configs); err != nil {
 			return err
+		}
+		if len(configs) > 0 {
+			spew.Dump(configs)
 		}
 		for _, config := range configs {
 			b.addResource(config)
@@ -76,19 +79,12 @@ func (b *Build) addResource(ru *pkgfs.Config) error {
 		return nil
 	}
 	b.processed[ru.ImportPath] = true
-	pkg, err := build.Import(ru.ImportPath, b.SrcDir, build.AllowBinary)
+	fs := pkgfs.New(*ru)
+	root, err := fs.Open("/")
 	if err != nil {
 		return err
 	}
-	rootAbs := filepath.Join(pkg.SrcRoot, pkg.ImportPath)
-	if b.Verbose {
-		fmt.Printf("Package: [%s]/%s\n", pkg.SrcRoot, pkg.ImportPath)
-	}
-	rootDir, err := os.Open(rootAbs)
-	if err != nil {
-		return err
-	}
-	files, err := rootDir.Readdir(0)
+	files, err := root.Readdir(0)
 	if err != nil {
 		return err
 	}
@@ -112,8 +108,7 @@ func (b *Build) addResource(ru *pkgfs.Config) error {
 		if err != nil {
 			return err
 		}
-		rabs := filepath.Join(rootAbs, info.Name())
-		r, err := os.Open(rabs)
+		r, err := fs.Open(info.Name())
 		if err != nil {
 			return err
 		}

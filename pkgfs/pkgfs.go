@@ -17,11 +17,13 @@
 package pkgfs
 
 import (
+	"go/build"
 	"log"
 	"os"
 	"os/exec"
 
 	"github.com/daaku/go.fs"
+	"github.com/daaku/go.fs/emptyfs"
 	"github.com/daaku/go.fs/limitfs"
 	"github.com/daaku/go.fs/realfs"
 	"github.com/daaku/go.fs/zipfs"
@@ -45,8 +47,15 @@ func New(c Config) fs.System {
 	var s fs.System
 	if exeZipFS == nil {
 		s = realfs.New()
+		pkg, err := build.Import(c.ImportPath, "", build.FindOnly)
+		if err != nil {
+			s = emptyfs.New()
+		} else {
+			lc.Root = pkg.Dir
+		}
 	} else {
 		s = exeZipFS
+		lc.Root = c.ImportPath
 	}
 	return limitfs.New(lc, s)
 }

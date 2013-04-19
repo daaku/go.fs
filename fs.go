@@ -104,8 +104,8 @@ type File interface {
 	WriteString(s string) (ret int, err error)
 }
 
-// A FileSystem implements access to a collection of named files.
-type FileSystem interface {
+// A System implements access to a collection of named files.
+type System interface {
 	// Open a named file for reading.
 	Open(name string) (File, error)
 

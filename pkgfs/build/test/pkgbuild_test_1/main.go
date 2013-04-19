@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/daaku/go.pkgfs"
+	"github.com/daaku/go.fs/pkgfs"
 )
 
 var FS = pkgfs.New(pkgfs.Config{

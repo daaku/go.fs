@@ -8,7 +8,7 @@ import (
 	"debug/elf"
 	"fmt"
 	"github.com/daaku/go.atomicfile"
-	"github.com/daaku/go.pkgfs/pkgbuild"
+	"github.com/daaku/go.fs/pkgfs/build"
 	"github.com/voxelbrain/goptions"
 	"go/build"
 	"io"

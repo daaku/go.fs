@@ -9,9 +9,9 @@ import (
 
 // Defines a Config that selects files to be made available via a File System.
 type Config struct {
-	Root      string // use as the root of the File System
-	Recursive bool   // default is not recursive
-	Glob      string // optionally limit by a glob pattern
+	Root      string // used as the root of the File System
+	Recursive bool   // control access to nested directories
+	Glob      string // limit by a glob pattern
 }
 
 type system struct {
@@ -64,6 +64,7 @@ func (s system) filter(given []os.FileInfo) (final []os.FileInfo, err error) {
 	return final, nil
 }
 
+// Create a wrapped fs.System that limits access based on the provided Config.
 func New(c Config, system fs.System) fs.System {
 	return nil
 }

@@ -1,4 +1,4 @@
-// Package realfs provides access to the real FileSystem.
+// Package realfs provides access to the real File System.
 package realfs
 
 import (
@@ -11,6 +11,7 @@ type system struct{}
 
 var singleton = system{}
 
+// Provides access to the real unmodified file system.
 func New() fs.System {
 	return singleton
 }

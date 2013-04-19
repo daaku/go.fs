@@ -1,4 +1,4 @@
-// Package zipfs provides a FileSystem interface backed by a zip file.
+// Package zipfs provides a File System interface backed by a zip file.
 package zipfs
 
 import (
@@ -97,6 +97,7 @@ func (s *system) IsNotExist(err error) bool {
 	return fsutil.IsNotExist(err)
 }
 
+// Open a file system using the given zip.Reader.
 func New(zr *zip.Reader) fs.System {
 	return &system{zipReader: zr}
 }

@@ -77,7 +77,7 @@ type system struct {
 	zipReader *zip.Reader
 }
 
-func (s *system) Open(name string) (fs.File, error) {
+func (s system) Open(name string) (fs.File, error) {
 	for _, f := range s.zipReader.File {
 		if f.Name == name {
 			rc, err := f.Open()
@@ -93,13 +93,13 @@ func (s *system) Open(name string) (fs.File, error) {
 	return nil, fsutil.NewErrNotFound(name)
 }
 
-func (s *system) IsNotExist(err error) bool {
+func (s system) IsNotExist(err error) bool {
 	return fsutil.IsNotExist(err)
 }
 
 // Open a file system using the given zip.Reader.
 func New(zr *zip.Reader) fs.System {
-	return &system{zipReader: zr}
+	return system{zipReader: zr}
 }
 
 // Opens the named zip file as a fs.System.

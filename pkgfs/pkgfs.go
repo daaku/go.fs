@@ -17,7 +17,6 @@ package pkgfs
 
 import (
 	"go/build"
-	"log"
 	"os"
 	"os/exec"
 
@@ -59,16 +58,18 @@ func New(c Config) fs.System {
 	return limitfs.New(lc, s)
 }
 
+// Returns true if the currently running executable was found to have an
+// attached zip that is being used for pkgfs backed File Systems.
+func IsUsingExeZip() bool {
+	return exeZipFS != nil
+}
+
 // A singleton zip is expected containing contents from all packages. We open
 // this when the process is started and never explicitly close it.
 var exeZipFS fs.System
 
 func init() {
-	var err error
-	exeZipFS, err = openRunningExeAsZip()
-	if err != nil {
-		log.Println(err)
-	}
+	exeZipFS, _ = openRunningExeAsZip()
 }
 
 func openRunningExeAsZip() (fs.System, error) {

@@ -17,4 +17,5 @@ import (
 //
 
 func TestStub(t *testing.T) {
+	t.Parallel()
 }

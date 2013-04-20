@@ -7,6 +7,7 @@ import (
 )
 
 func TestAlwaysEmpty(t *testing.T) {
+	t.Parallel()
 	s := emptyfs.New()
 	_, err := s.Open("foo")
 	if err == nil {

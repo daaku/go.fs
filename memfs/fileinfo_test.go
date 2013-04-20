@@ -9,6 +9,7 @@ import (
 )
 
 func TestFileInfoFromExisting(t *testing.T) {
+	t.Parallel()
 	const name = "foo"
 	fi := memfs.NewFileInfoFromExisting(
 		memfs.NewFileInfo(memfs.FileInfo{
@@ -21,6 +22,7 @@ func TestFileInfoFromExisting(t *testing.T) {
 }
 
 func TestFileInfoSetSys(t *testing.T) {
+	t.Parallel()
 	fi := memfs.NewFileInfo(memfs.FileInfo{})
 	var s interface{} = 42
 	fi.SetSys(s)
@@ -30,6 +32,7 @@ func TestFileInfoSetSys(t *testing.T) {
 }
 
 func TestFileInfoIsDir(t *testing.T) {
+	t.Parallel()
 	fi := memfs.NewFileInfo(memfs.FileInfo{
 		Mode: os.ModeDir,
 	})
@@ -39,6 +42,7 @@ func TestFileInfoIsDir(t *testing.T) {
 }
 
 func TestFileInfoSetModTime(t *testing.T) {
+	t.Parallel()
 	now := time.Now()
 	fi := memfs.NewFileInfo(memfs.FileInfo{
 		ModTime: now,

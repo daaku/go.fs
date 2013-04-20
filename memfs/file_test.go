@@ -18,6 +18,7 @@ var (
 )
 
 func TestFileChmod(t *testing.T) {
+	t.Parallel()
 	f := memfs.NewFile("foo", dMode, dTime, nil)
 	stat, err := f.Stat()
 	if err != nil {
@@ -41,6 +42,7 @@ func TestFileChmod(t *testing.T) {
 }
 
 func TestFileDefaultOwner(t *testing.T) {
+	t.Parallel()
 	f := memfs.NewFile("foo", dMode, dTime, nil)
 	gid, err := f.OwnerGID()
 	if err != nil {
@@ -59,6 +61,7 @@ func TestFileDefaultOwner(t *testing.T) {
 }
 
 func TestFileChown(t *testing.T) {
+	t.Parallel()
 	f := memfs.NewFile("foo", dMode, dTime, nil)
 	expectedUID, expectedGID := 1, 2
 	err := f.Chown(expectedUID, expectedGID)
@@ -82,6 +85,7 @@ func TestFileChown(t *testing.T) {
 }
 
 func TestFileNameOnCreate(t *testing.T) {
+	t.Parallel()
 	f := memfs.NewFile("foo", dMode, dTime, nil)
 	stat, err := f.Stat()
 	if err != nil {
@@ -93,6 +97,7 @@ func TestFileNameOnCreate(t *testing.T) {
 }
 
 func TestFileNameOnSet(t *testing.T) {
+	t.Parallel()
 	f := memfs.NewFile("foo", dMode, dTime, nil)
 	name := "bar/baz"
 	f.SetName(name)
@@ -109,6 +114,7 @@ func TestFileNameOnSet(t *testing.T) {
 }
 
 func TestFileReadLess(t *testing.T) {
+	t.Parallel()
 	f := memfs.NewFile("foo", dMode, dTime, []byte("ab"))
 	b := make([]byte, 1)
 	n, err := f.Read(b)
@@ -151,6 +157,7 @@ func TestFileReadLess(t *testing.T) {
 }
 
 func TestFileReadReset(t *testing.T) {
+	t.Parallel()
 	f := memfs.NewFile("foo", dMode, dTime, []byte("ab"))
 	b := make([]byte, 1)
 	n, err := f.Read(b)
@@ -177,6 +184,7 @@ func TestFileReadReset(t *testing.T) {
 }
 
 func TestFileReadMore(t *testing.T) {
+	t.Parallel()
 	f := memfs.NewFile("foo", dMode, dTime, []byte("ab"))
 	b := make([]byte, 10)
 	n, err := f.Read(b)
@@ -192,6 +200,7 @@ func TestFileReadMore(t *testing.T) {
 }
 
 func TestFileReadAt(t *testing.T) {
+	t.Parallel()
 	f := memfs.NewFile("foo", dMode, dTime, []byte("ab"))
 	b := make([]byte, 10)
 	n, err := f.ReadAt(b, 1)
@@ -207,6 +216,7 @@ func TestFileReadAt(t *testing.T) {
 }
 
 func TestFileSeek(t *testing.T) {
+	t.Parallel()
 	f := memfs.NewFile("foo", dMode, dTime, []byte("123456789"))
 	n, err := f.Seek(2, os.SEEK_CUR)
 	if err != nil {
@@ -251,6 +261,7 @@ func TestFileSeek(t *testing.T) {
 }
 
 func TestFileTruncate(t *testing.T) {
+	t.Parallel()
 	in := []byte("123456789")
 	f := memfs.NewFile("foo", dMode, dTime, in)
 	stat, err := f.Stat()
@@ -298,6 +309,7 @@ func TestFileTruncate(t *testing.T) {
 }
 
 func TestFileTruncateGrowToEnsureReuse(t *testing.T) {
+	t.Parallel()
 	in := []byte("123456789")
 	f := memfs.NewFile("foo", dMode, dTime, in)
 	err := f.Truncate(4)
@@ -326,6 +338,7 @@ func TestFileTruncateGrowToEnsureReuse(t *testing.T) {
 }
 
 func TestFileWriteAt(t *testing.T) {
+	t.Parallel()
 	f := memfs.NewFile("foo", dMode, dTime, nil)
 	in := []byte("foo bar")
 	n, err := f.WriteAt(in, 0)
@@ -345,6 +358,7 @@ func TestFileWriteAt(t *testing.T) {
 }
 
 func TestFileWriteAtOutOfRange(t *testing.T) {
+	t.Parallel()
 	f := memfs.NewFile("foo", dMode, dTime, nil)
 	_, err := f.WriteAt([]byte("a"), 1)
 	if err == nil || !strings.Contains(err.Error(), "out of range") {
@@ -353,6 +367,7 @@ func TestFileWriteAtOutOfRange(t *testing.T) {
 }
 
 func TestFileWriteToNil(t *testing.T) {
+	t.Parallel()
 	f := memfs.NewFile("foo", dMode, dTime, nil)
 	in := []byte("foo bar")
 	n, err := f.Write(in)
@@ -372,6 +387,7 @@ func TestFileWriteToNil(t *testing.T) {
 }
 
 func TestFileClosed(t *testing.T) {
+	t.Parallel()
 	f := memfs.NewFile("foo", dMode, dTime, nil)
 	assertClosed := func(err error) {
 		if !strings.Contains(err.Error(), "already closed") {
@@ -401,12 +417,14 @@ func TestFileClosed(t *testing.T) {
 }
 
 func TestFileSync(t *testing.T) {
+	t.Parallel()
 	if memfs.NewFile("foo", dMode, dTime, nil).Sync() != nil {
 		t.Fatal("failed sync")
 	}
 }
 
 func TestFileWithDirOperations(t *testing.T) {
+	t.Parallel()
 	f := memfs.NewFile("foo", dMode, dTime, nil)
 	assertNotDir := func(err error) {
 		if !strings.Contains(err.Error(), "is not a directory") {
@@ -422,6 +440,7 @@ func TestFileWithDirOperations(t *testing.T) {
 }
 
 func TestDirWithFileOperations(t *testing.T) {
+	t.Parallel()
 	d := memfs.NewDir("foo", dMode, dTime, nil)
 	assertIsDir := func(err error) {
 		if !strings.Contains(err.Error(), "is a directory") {
@@ -445,6 +464,7 @@ func TestDirWithFileOperations(t *testing.T) {
 }
 
 func TestDirReaddir(t *testing.T) {
+	t.Parallel()
 	i1 := memfs.FileInfo{
 		Name: "bar",
 	}
@@ -499,6 +519,7 @@ func TestDirReaddir(t *testing.T) {
 }
 
 func TestDirReaddirnames(t *testing.T) {
+	t.Parallel()
 	i1 := memfs.FileInfo{
 		Name: "bar",
 	}
@@ -553,6 +574,7 @@ func TestDirReaddirnames(t *testing.T) {
 }
 
 func TestDirSetDirInfos(t *testing.T) {
+	t.Parallel()
 	i1 := memfs.FileInfo{
 		Name: "bar",
 	}

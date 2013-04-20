@@ -10,6 +10,7 @@ import (
 )
 
 func TestSimpleSystem(t *testing.T) {
+	t.Parallel()
 	const name = "foo"
 	const data = "bar"
 	createdFile := memfs.NewFile(name, os.FileMode(666), time.Now(), []byte(data))
@@ -24,6 +25,7 @@ func TestSimpleSystem(t *testing.T) {
 }
 
 func TestSystemNotFound(t *testing.T) {
+	t.Parallel()
 	s := memfs.NewSystem(nil)
 	_, err := s.Open("foo")
 	if err == nil {

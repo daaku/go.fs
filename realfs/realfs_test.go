@@ -9,6 +9,7 @@ import (
 )
 
 func TestOpenExisting(t *testing.T) {
+	t.Parallel()
 	s := realfs.New()
 	_, err := s.Open("/etc/passwd")
 	if err != nil {
@@ -17,6 +18,7 @@ func TestOpenExisting(t *testing.T) {
 }
 
 func TestOpenNotExist(t *testing.T) {
+	t.Parallel()
 	s := realfs.New()
 	_, err := s.Open("/foo/bar/baz/boom")
 	if err == nil {
@@ -28,6 +30,7 @@ func TestOpenNotExist(t *testing.T) {
 }
 
 func TestGetUGID(t *testing.T) {
+	t.Parallel()
 	tf, err := ioutil.TempFile("", "realfs_test")
 	if err != nil {
 		t.Fatal(err)
@@ -57,6 +60,7 @@ func TestGetUGID(t *testing.T) {
 }
 
 func TestGetUGIDError(t *testing.T) {
+	t.Parallel()
 	tf, err := ioutil.TempFile("", "realfs_test")
 	if err != nil {
 		t.Fatal(err)

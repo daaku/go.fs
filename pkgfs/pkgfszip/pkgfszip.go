@@ -111,7 +111,7 @@ func Main() (err error) {
 
 func main() {
 	if err := Main(); err != nil {
-		fmt.Fprintf(os.Stderr, "error: %s", err)
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }

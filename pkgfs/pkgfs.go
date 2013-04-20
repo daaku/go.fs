@@ -9,10 +9,6 @@
 // One intended goal with this approach is that the package is still "go get"
 // compatible. The binary just needs to be augmented before it can be deployed
 // into production.
-//
-// Another goal is to make the transition from the os package to use this as
-// seamless as possible, so where possible the APIs are designed to mimic
-// their os counterparts.
 package pkgfs
 
 import (

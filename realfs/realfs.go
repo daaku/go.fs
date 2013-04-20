@@ -2,8 +2,8 @@
 package realfs
 
 import (
-	"errors"
 	"os"
+	"syscall"
 
 	"github.com/daaku/go.fs"
 )
@@ -34,9 +34,17 @@ type file struct {
 }
 
 func (f file) OwnerGID() (int, error) {
-	return 0, errors.New("realfs: TODO: OwnerGID not implemented")
+	fi, err := f.Stat()
+	if err != nil {
+		return 0, err
+	}
+	return int(fi.Sys().(*syscall.Stat_t).Uid), nil
 }
 
 func (f file) OwnerUID() (int, error) {
-	return 0, errors.New("realfs: TODO: OwnerUID not implemented")
+	fi, err := f.Stat()
+	if err != nil {
+		return 0, err
+	}
+	return int(fi.Sys().(*syscall.Stat_t).Gid), nil
 }

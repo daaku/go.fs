@@ -35,7 +35,7 @@ type Config struct {
 }
 
 // Provides scoped access to a package as a File System. If the currently
-// running binary has a zip attached, it will be used, otherwise the GOROOT
+// running binary has a zip attached, it will be used, otherwise the GOPATH
 // will be used to find the actual files.
 func New(c Config) fs.System {
 	lc := limitfs.Config{

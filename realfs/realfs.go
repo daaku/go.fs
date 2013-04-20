@@ -6,6 +6,7 @@ import (
 	"syscall"
 
 	"github.com/daaku/go.fs"
+	"github.com/daaku/go.fs/fsutil"
 )
 
 type system struct{}
@@ -26,7 +27,7 @@ func (s system) Open(name string) (fs.File, error) {
 }
 
 func (s system) IsNotExist(err error) bool {
-	return os.IsNotExist(err)
+	return fsutil.IsNotExist(err)
 }
 
 type file struct {

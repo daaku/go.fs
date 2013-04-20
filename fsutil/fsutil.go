@@ -4,6 +4,7 @@ package fsutil
 import (
 	"errors"
 	"fmt"
+	"os"
 	"path"
 	"path/filepath"
 	"strings"
@@ -23,8 +24,10 @@ func NewErrNotFound(name string) error {
 }
 
 func IsNotExist(err error) bool {
-	_, ok := err.(errNotFound)
-	return ok
+	if _, ok := err.(errNotFound); ok {
+		return true
+	}
+	return os.IsNotExist(err)
 }
 
 // Cleans path string.

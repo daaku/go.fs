@@ -10,7 +10,7 @@ import (
 	"github.com/daaku/go.atomicfile"
 	"github.com/daaku/go.fs/pkgfs/build"
 	"github.com/voxelbrain/goptions"
-	"go/build"
+	gobuild "go/build"
 	"io"
 	"os"
 	"path/filepath"
@@ -18,7 +18,7 @@ import (
 
 // Find the binary path for a command specified as it's import path.
 func BinaryPathFromImportPath(importPath, srcDir string) (string, error) {
-	pkg, err := build.Import(importPath, srcDir, build.AllowBinary)
+	pkg, err := gobuild.Import(importPath, srcDir, gobuild.AllowBinary)
 	if err != nil {
 		return "", err
 	}
@@ -100,7 +100,7 @@ func Main() (err error) {
 	}
 	defer out.Close()
 
-	build := &pkgbuild.Build{
+	build := &build.Build{
 		ImportPath: options.ImportPath,
 		SrcDir:     options.SrcDir,
 		Verbose:    options.Verbose,

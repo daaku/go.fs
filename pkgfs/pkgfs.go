@@ -47,7 +47,7 @@ func New(c Config) fs.System {
 		s = realfs.New()
 		pkg, err := build.Import(c.ImportPath, "", build.FindOnly)
 		if err != nil {
-			s = emptyfs.New()
+			s = emptyfs.NewWithError(err)
 		} else {
 			lc.Root = pkg.Dir
 		}

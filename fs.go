@@ -6,21 +6,19 @@
 // At first you just want the real file system: realfs. Then you write tests
 // and just want to define the file system in test code: memfs. You get more
 // developers on your project and need to reference files in relative terms and
-// possibly limit access: limitfs. You decide you already reference code in
-// relative terms and want to use import paths as your relative path: pkgfs.
-// Your project becomes mature and you want easier deployent and start
-// packaging your resources into a zip file: zipfs. Obviously you didn't just
-// want a zip file, you want to just augment the compiled binary you already
-// deploy, but you still want to be a `go get` compatible package during
-// development: bundlefs. You want a tool to do the last step for you:
-// bundlezip.
+// possibly limit access: limitfs. Your project becomes mature and you want
+// easier deployent and start packaging your resources into a zip file: zipfs.
+// Obviously you didn't just want a zip file, you want to just augment the
+// compiled binary you already deploy, but you still want to be a `go get`
+// compatible package during development: pkgfs. You want a tool to do the last
+// step for you: pkgfszip.
 //
 // How to use it:
 //
 // Write your libraries using the interfaces in this package, and then use the
 // implementations from any of the above as your use case evolves. Most likely
-// you want to use memfs in your tests, bundlefs in application code and
-// bundlezip to augment your binary before deployment and you'll get all the
+// you want to use memfs in your tests, pkgfs in application code and
+// pkgfszip to augment your binary before deployment and you'll get all the
 // benefits of this family of packages.
 //
 // A note about read & write:
@@ -33,7 +31,7 @@
 // errors when you try to use the write APIs. In practice this doesn't mean
 // much and you can mostly just ignore the write APIs if you live in a read
 // only world and want it's advantages or use the write APIs and not use
-// abstractions like zipfs or bundlefs which don't make much sense with respect
+// abstractions like zipfs or pkgfs which don't make much sense with respect
 // to writes.
 package fs
 

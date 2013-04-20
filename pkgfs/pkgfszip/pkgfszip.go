@@ -79,10 +79,11 @@ func OpenFile(path string) (io.WriteCloser, error) {
 
 func Main() (err error) {
 	options := struct {
-		ImportPath string `goptions:"-p, --package, obligatory, description='package to build'"`
-		SrcDir     string `goptions:"-s, --src-dir, description='src dir for imports'"`
-		Verbose    bool   `goptions:"-v, --verbose, description='be verbose'"`
-		OutPath    string `goptions:"-o, --output, description='output file'"`
+		ImportPath string        `goptions:"-p, --package, obligatory, description='package to build'"`
+		SrcDir     string        `goptions:"-s, --src-dir, description='src dir for imports'"`
+		Verbose    bool          `goptions:"-v, --verbose, description='be verbose'"`
+		OutPath    string        `goptions:"-o, --output, description='output file'"`
+		Help       goptions.Help `goptions:"-h, --help, description='show this help'"`
 	}{}
 	goptions.ParseAndFail(&options)
 

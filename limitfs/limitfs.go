@@ -1,5 +1,5 @@
-// Package limitfs allows for providing a limited view on an existing
-// fs.System source.
+// Package limitfs provides a view of another File System limiting access per
+// your configuration.
 package limitfs
 
 import (

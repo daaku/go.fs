@@ -1,5 +1,4 @@
-// Package pkgfs provides a read-only File System based around go import
-// paths.
+// Package pkgfs provides a read-only File System based on go import paths.
 //
 // Essentially it provides a way to select files from a given path, defined in
 // terms of a go import path. In your development environment, this will work

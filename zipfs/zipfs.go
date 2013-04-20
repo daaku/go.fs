@@ -1,4 +1,4 @@
-// Package zipfs provides a File System interface backed by a zip file.
+// Package zipfs provides a zip file backed File System.
 package zipfs
 
 import (

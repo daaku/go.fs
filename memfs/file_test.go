@@ -42,26 +42,42 @@ func TestFileChmod(t *testing.T) {
 
 func TestFileDefaultOwner(t *testing.T) {
 	f := memfs.NewFile("foo", dMode, dTime, nil)
-	if f.OwnerGID() != 0 {
+	gid, err := f.OwnerGID()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if gid != 0 {
 		t.Fatal("expected 0 gid")
 	}
-	if f.OwnerUID() != 0 {
+	uid, err := f.OwnerUID()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if uid != 0 {
 		t.Fatal("expected 0 uid")
 	}
 }
 
 func TestFileChown(t *testing.T) {
 	f := memfs.NewFile("foo", dMode, dTime, nil)
-	uid, gid := 1, 2
-	err := f.Chown(uid, gid)
+	expectedUID, expectedGID := 1, 2
+	err := f.Chown(expectedUID, expectedGID)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if f.OwnerGID() != gid {
-		t.Fatalf("expected %d gid", gid)
+	actualGID, err := f.OwnerGID()
+	if err != nil {
+		t.Fatal(err)
 	}
-	if f.OwnerUID() != uid {
-		t.Fatalf("expected %d uid", uid)
+	if actualGID != expectedGID {
+		t.Fatal("did not find expected gid")
+	}
+	actualUID, err := f.OwnerUID()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if actualUID != expectedUID {
+		t.Fatal("did not find expected uid")
 	}
 }
 

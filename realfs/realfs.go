@@ -3,8 +3,9 @@ package realfs
 
 import (
 	"errors"
-	"github.com/daaku/go.fs"
 	"os"
+
+	"github.com/daaku/go.fs"
 )
 
 type system struct{}

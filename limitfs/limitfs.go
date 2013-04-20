@@ -3,8 +3,9 @@
 package limitfs
 
 import (
-	"github.com/daaku/go.fs"
 	"os"
+
+	"github.com/daaku/go.fs"
 )
 
 // Defines a Config that selects files to be made available via a File System.

@@ -15,3 +15,6 @@ import (
 // empty string
 // non file/dir (like socket/pipe)
 //
+
+func TestStub(t *testing.T) {
+}

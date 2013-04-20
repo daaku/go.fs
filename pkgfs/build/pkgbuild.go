@@ -1,4 +1,4 @@
-package pkgbuild
+package build
 
 import (
 	"archive/zip"

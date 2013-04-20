@@ -1,9 +1,9 @@
-package pkgbuild_test
+package build_test
 
 import (
 	"archive/zip"
 	"bytes"
-	"github.com/daaku/go.pkgfs/pkgbuild"
+	"github.com/daaku/go.fs/pkgfs/build"
 	"testing"
 )
 
@@ -30,8 +30,8 @@ func NewMemZip() *MemZip {
 func TestSimpleBuild(t *testing.T) {
 	t.Parallel()
 	memzip := NewMemZip()
-	build := &pkgbuild.Build{
-		ImportPath: "github.com/daaku/go.pkgfs/pkgbuild/test/pkgbuild_test_1",
+	build := &build.Build{
+		ImportPath: "github.com/daaku/go.fs/pkgfs/build/test/pkgbuild_test_1",
 		Writer:     memzip.Buffer,
 	}
 	if err := build.Go(); err != nil {
@@ -41,28 +41,10 @@ func TestSimpleBuild(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(reader.File) != 1 {
-		t.Fatal("expecting 1 entry in zip")
+	if l := len(reader.File); l != 1 {
+		t.Fatalf("expecting 1 entry in zip got %d", l)
 	}
-	if reader.File[0].Name != "github.com/daaku/go.pkgfs/pkgbuild/test/pkgbuild_test_1/main.go" {
+	if reader.File[0].Name != "github.com/daaku/go.fs/pkgfs/build/test/pkgbuild_test_1/main.go" {
 		t.Fatalf("did not find expected file, found %s", reader.File[0].Name)
-	}
-}
-
-func TestParseResourceUsage(t *testing.T) {
-	t.Parallel()
-	content := []byte(`
-  package foo
-  import "github.com/go.pkgfs"
-  var foo = pkgfs.Config{"foo"}`)
-	rus, err := pkgbuild.ParseResourceUsage(content)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(rus) != 1 {
-		t.Fatal("was expecting 1 resource usage")
-	}
-	if rus[0].ImportPath != "foo" {
-		t.Fatalf("was expecting foo resource usage but got %s", rus[0].ImportPath)
 	}
 }

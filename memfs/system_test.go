@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/daaku/go.fs"
 	"github.com/daaku/go.fs/memfs"
 )
 
@@ -13,7 +14,7 @@ func TestSimpleSystem(t *testing.T) {
 	const name = "foo"
 	const data = "bar"
 	createdFile := memfs.NewFile(name, os.FileMode(666), time.Now(), []byte(data))
-	s := memfs.NewSystem(map[string]*memfs.File{name: createdFile})
+	s := memfs.NewSystem(map[string]fs.File{name: createdFile})
 	openedFile, err := s.Open(name)
 	if err != nil {
 		t.Fatal(err)
@@ -39,7 +40,7 @@ func TestSystemWithFiles(t *testing.T) {
 	t.Parallel()
 	f1 := memfs.NewFile("foo", os.FileMode(666), time.Now(), nil)
 	f2 := memfs.NewFile("bar", os.FileMode(666), time.Now(), nil)
-	s := memfs.NewWithFiles(map[string]*memfs.File{
+	s := memfs.NewWithFiles(map[string]fs.File{
 		"d/foo": f1,
 		"d/bar": f2,
 	})
@@ -67,7 +68,7 @@ func TestSystemWithFilesClosedFile(t *testing.T) {
 	t.Parallel()
 	f1 := memfs.NewFile("foo", os.FileMode(666), time.Now(), nil)
 	f1.Close()
-	s := memfs.NewWithFiles(map[string]*memfs.File{
+	s := memfs.NewWithFiles(map[string]fs.File{
 		"d/foo": f1,
 	})
 	_, err := s.Open("d/foo")
@@ -80,7 +81,7 @@ func TestSystemWithFilesIncorrectStructure(t *testing.T) {
 	t.Parallel()
 	f1 := memfs.NewFile("foo", os.FileMode(666), time.Now(), nil)
 	f2 := memfs.NewFile("bar", os.FileMode(666), time.Now(), nil)
-	s := memfs.NewWithFiles(map[string]*memfs.File{
+	s := memfs.NewWithFiles(map[string]fs.File{
 		"d":     f2,
 		"d/foo": f1,
 	})

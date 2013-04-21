@@ -439,6 +439,8 @@ func TestFileWithDirOperations(t *testing.T) {
 	assertNotDir(err)
 	err = f.SetDirInfos(nil)
 	assertNotDir(err)
+	err = f.AddDirInfo(nil)
+	assertNotDir(err)
 }
 
 func TestDirWithFileOperations(t *testing.T) {
@@ -594,6 +596,29 @@ func TestDirSetDirInfos(t *testing.T) {
 	}
 	some, _ = d.Readdirnames(1)
 	if actual := some[0]; actual != i2.Name {
+		t.Fatalf("was expecting %s but got %s", i2.Name, actual)
+	}
+}
+
+func TestDirAddDirInfo(t *testing.T) {
+	t.Parallel()
+	i1 := memfs.FileInfo{
+		Name: "bar",
+	}
+	i2 := memfs.FileInfo{
+		Name: "baz",
+	}
+	d := memfs.NewDir("foo", dMode, dTime, []os.FileInfo{memfs.NewFileInfo(i1)})
+	some, _ := d.Readdirnames(1)
+	if actual := some[0]; actual != i1.Name {
+		t.Fatal("was expecting %s but got %s", i1.Name, actual)
+	}
+	err := d.AddDirInfo(memfs.NewFileInfo(i2))
+	if err != nil {
+		t.Fatal(err)
+	}
+	some, _ = d.Readdirnames(2)
+	if actual := some[1]; actual != i2.Name {
 		t.Fatalf("was expecting %s but got %s", i2.Name, actual)
 	}
 }

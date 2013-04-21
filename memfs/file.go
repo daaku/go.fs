@@ -192,6 +192,17 @@ func (f *File) SetDirInfos(infos []os.FileInfo) error {
 	return nil
 }
 
+// Add a new info to the directory. Will also reset the internal offset.
+func (f *File) AddDirInfo(info os.FileInfo) error {
+	if !f.isDir {
+		return errNotDir
+	}
+
+	f.infos = append(f.infos, info)
+	f.Reset()
+	return nil
+}
+
 // Reset offset for Read/Write/Readdir/Readdirnames.
 func (f *File) Reset() {
 	f.off = 0

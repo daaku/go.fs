@@ -231,6 +231,10 @@ func (f *File) Seek(offset int64, whence int) (ret int64, err error) {
 
 // Stat returns the FileInfo structure describing this File.
 func (f *File) Stat() (fi os.FileInfo, err error) {
+	if f.IsClosed() {
+		return nil, errAlreadyClosed
+	}
+
 	return f.fileInfo, nil
 }
 

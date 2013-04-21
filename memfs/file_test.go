@@ -404,6 +404,8 @@ func TestFileClosed(t *testing.T) {
 	assertClosed(err)
 	_, err = f.Seek(2, os.SEEK_SET)
 	assertClosed(err)
+	_, err = f.Stat()
+	assertClosed(err)
 	err = f.Sync()
 	assertClosed(err)
 	err = f.Truncate(5)

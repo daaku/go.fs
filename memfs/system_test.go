@@ -90,3 +90,31 @@ func TestSystemWithFilesIncorrectStructure(t *testing.T) {
 		t.Fatal("was expecting error")
 	}
 }
+
+func TestSystemWithFilesTwoLevels(t *testing.T) {
+	t.Parallel()
+	f1 := memfs.NewFile("foo", os.FileMode(666), time.Now(), nil)
+	f2 := memfs.NewFile("bar", os.FileMode(666), time.Now(), nil)
+	s := memfs.NewWithFiles(map[string]fs.File{
+		"d/e/foo": f1,
+		"d/e/bar": f2,
+	})
+	a1, err := s.Open("d/e/foo")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if a1 != f1 {
+		t.Fatal("did not find expected file")
+	}
+	d, err := s.Open("d")
+	if err != nil {
+		t.Fatal(err)
+	}
+	some, err := d.Readdirnames(0)
+	if len(some) != 1 {
+		t.Fatal("was expecting 1 name")
+	}
+	if actual := some[0]; actual != "e" {
+		t.Fatal("was expecting bar")
+	}
+}

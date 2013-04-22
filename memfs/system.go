@@ -41,6 +41,9 @@ func NewWithFiles(files map[string]fs.File) fs.System {
 		}
 		s[fullpath] = file
 		parent := filepath.Dir(fullpath)
+		if parent == "." {
+			return nil
+		}
 		if parentdir := s[parent]; parentdir != nil {
 			pf := parentdir.(*File)
 			if err := pf.AddDirInfo(fi); err != nil {

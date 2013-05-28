@@ -23,8 +23,23 @@ func NewErrNotFound(name string) error {
 	return errNotFound(name)
 }
 
+type errLimitedNotFound string
+
+func (e errLimitedNotFound) Error() string {
+	return fmt.Sprintf("file limited or not found: %s", string(e))
+}
+
+// Returns an error that indicates the named file was not found or access was
+// artificially limited.
+func NewErrLimitedNotFound(name string) error {
+	return errLimitedNotFound(name)
+}
+
 func IsNotExist(err error) bool {
 	if _, ok := err.(errNotFound); ok {
+		return true
+	}
+	if _, ok := err.(errLimitedNotFound); ok {
 		return true
 	}
 	return os.IsNotExist(err)

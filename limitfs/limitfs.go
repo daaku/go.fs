@@ -4,8 +4,11 @@ package limitfs
 
 import (
 	"os"
+	"path"
+	"strings"
 
 	"github.com/daaku/go.fs"
+	"github.com/daaku/go.fs/fsutil"
 )
 
 // Defines a Config that selects files to be made available via a File System.
@@ -16,16 +19,64 @@ type Config struct {
 }
 
 type system struct {
-	fs.File
-	System    fs.System
-	glob      string
-	recusrive bool
+	Config Config
+	System fs.System
 }
 
-func (s system) Readdir(count int) (fis []os.FileInfo, err error) {
+func (s system) Open(name string) (fs.File, error) {
+	cleaned, err := fsutil.Clean(name)
+	if err != nil {
+		return nil, err
+	}
+
+	if !s.Config.Recursive && strings.ContainsRune(cleaned, '/') {
+		return nil, fsutil.NewErrLimitedNotFound(name)
+	}
+
+	final := path.Join(s.Config.Root, cleaned)
+	f, err := s.System.Open(final)
+	if err != nil {
+		return nil, err
+	}
+
+	if s.Config.Glob != "" {
+		fi, err := f.Stat()
+		if err != nil {
+			return nil, err
+		}
+		if fi.IsDir() {
+			return dir{
+				File: f,
+				Path: final,
+				Glob: s.Config.Glob,
+			}, nil
+		}
+		match, err := path.Match(s.Config.Glob, final)
+		if err != nil {
+			return nil, err
+		}
+		if !match {
+			return nil, fsutil.NewErrLimitedNotFound(name)
+		}
+	}
+
+	return f, nil
+}
+
+func (s system) IsNotExist(err error) bool {
+	return fsutil.IsNotExist(err)
+}
+
+type dir struct {
+	fs.File
+	Path string
+	Glob string
+}
+
+func (d dir) Readdir(count int) (fis []os.FileInfo, err error) {
 	if count <= 0 {
-		raw, err := s.File.Readdir(count)
-		fis, errF := s.filter(raw)
+		raw, err := d.File.Readdir(count)
+		fis, errF := d.filter(raw)
 		if err == nil && errF != nil {
 			err = errF
 		}
@@ -34,11 +85,8 @@ func (s system) Readdir(count int) (fis []os.FileInfo, err error) {
 
 	pending := count
 	for pending > 0 {
-		raw, err := s.File.Readdir(pending)
-		if len(raw) == 0 {
-			return fis, err
-		}
-		filtered, errF := s.filter(raw)
+		raw, err := d.File.Readdir(pending)
+		filtered, errF := d.filter(raw)
 		fis = append(fis, filtered...)
 		if err == nil && errF != nil {
 			err = errF
@@ -51,21 +99,29 @@ func (s system) Readdir(count int) (fis []os.FileInfo, err error) {
 	return
 }
 
-func (s system) filter(given []os.FileInfo) (final []os.FileInfo, err error) {
-	// FIXME
+func (d dir) filter(given []os.FileInfo) (final []os.FileInfo, err error) {
 	for _, fi := range given {
-		if fi.IsDir() {
-			if !s.recusrive {
-				continue
-			}
-			//cfs, err := 1, nil
+		p := path.Join(d.Path, fi.Name())
+		match, err := path.Match(d.Glob, p)
+		if err != nil {
+			return nil, err
 		}
-		final = append(final, fi)
+		if match {
+			final = append(final, fi)
+		}
 	}
 	return final, nil
 }
 
+func (d dir) Readdirnames(count int) (names []string, err error) {
+	fis, err := d.Readdir(count)
+	for _, fi := range fis {
+		names = append(names, fi.Name())
+	}
+	return names, err
+}
+
 // Create a wrapped fs.System that limits access based on the provided Config.
-func New(c Config, system fs.System) fs.System {
-	return nil
+func New(c Config, s fs.System) fs.System {
+	return system{Config: c, System: s}
 }
